@@ -4,9 +4,9 @@
 
 ---
 
-I'm a Senior IT Auditor and Cyber Security Specialist based in Piraeus, Greece. This page is my professional front door — a single place where my career history, certifications, domain expertise, and published research are laid out clearly for anyone who wants to understand what I do and how I think.
+I'm a Senior IT Auditor and Cyber Security Specialist based in Greece. This page is my professional front door — a single place where my career history, certifications, domain expertise, and published research are laid out clearly for anyone who wants to understand what I do and how I think.
 
-The interactive gateway isn't a gimmick. It's a deliberate design choice: I work in security, and the experience of accessing this profile should feel like it.
+The interactive gateway isn't a gimmick. It's a deliberate design choice since I work in security, and the experience of accessing this profile should feel like it.
 
 ---
 
