@@ -1,579 +1,944 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Executive Portfolio // Andreas Yfantidis</title>
-    <link rel="icon" href="https://fav.farm/💻" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-main: #0b0f19;
-            --bg-card: #131a2c;
-            --border-color: #1e293b;
-            --accent-blue: #38bdf8;
-            --accent-green: #34d399;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andreas Yfantidis — Senior IT Auditor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #07101e;
+  --surface:   #0d1c30;
+  --surface2:  #132540;
+  --border:    #1a3350;
+  --amber:     #f59e0b;
+  --amber-dim: rgba(245,158,11,0.10);
+  --amber-mid: rgba(245,158,11,0.22);
+  --blue-hi:   #7dd3fc;
+  --green:     #34d399;
+  --green-dim: rgba(52,211,153,0.10);
+  --text:      #e8f0fe;
+  --muted:     #6e8faf;
+  --faint:     #2e4f6e;
+  --mono:      'JetBrains Mono', monospace;
+}
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 40px 20px;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
 
-        /* --- INTERACTIVE PORTAL GATEWAY --- */
-        #portal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #070a12;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            font-family: 'JetBrains Mono', monospace;
-        }
+/* ══════════════════════════════════════════
+   GATEWAY OVERLAY
+══════════════════════════════════════════ */
+#gateway {
+  position: fixed;
+  inset: 0;
+  background: #040b14;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .7s ease, transform .7s ease;
+}
 
-        .portal-box {
-            text-align: center;
-            max-width: 500px;
-            padding: 40px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-card);
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
+#gateway.dismissing {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
 
-        .portal-terminal-text {
-            color: var(--accent-green);
-            font-size: 14px;
-            margin-bottom: 25px;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 2px solid var(--accent-green);
-            animation: typing 2.5s steps=30, blink 0.75s step-end infinite;
-            width: 100%;
-        }
+/* Scanline texture */
+#gateway::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.18) 2px,
+    rgba(0,0,0,0.18) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
 
-        .portal-btn {
-            background: transparent;
-            border: 1px solid var(--accent-blue);
-            color: var(--accent-blue);
-            padding: 12px 28px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            font-weight: 500;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
-        }
+/* Ambient corner glow */
+#gateway::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 85%, rgba(245,158,11,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 35% at 85% 10%, rgba(125,211,252,0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
 
-        .portal-btn:hover {
-            background-color: var(--accent-blue);
-            color: var(--bg-main);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-            transform: translateY(-2px);
-        }
+.gw-box {
+  position: relative;
+  z-index: 2;
+  width: min(520px, 92vw);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 4px;
+  padding: 48px 44px 40px;
+  box-shadow: 0 0 60px rgba(245,158,11,0.06), 0 0 120px rgba(0,0,0,0.6);
+}
 
-        /* Classes triggered by JavaScript click */
-        .fade-out {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(1.05);
-        }
+/* Top bar with "window chrome" */
+.gw-chrome {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 32px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 7px;
+}
 
-        /* --- MAIN CV CONTAINER --- */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
-        }
+.gw-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+}
+.gw-dot:nth-child(1) { background: #ef4444; }
+.gw-dot:nth-child(2) { background: #f59e0b; }
+.gw-dot:nth-child(3) { background: #22c55e; }
 
-        .container.reveal {
-            opacity: 1;
-            transform: translateY(0);
-        }
+.gw-chrome-label {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--faint);
+  letter-spacing: .08em;
+}
 
-        /* --- DASHBOARD STYLES --- */
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+/* Content inside box */
+.gw-content {
+  margin-top: 20px;
+}
 
-        .header-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            border-left: 4px solid var(--accent-blue);
-        }
+.gw-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--amber);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-        .header-card h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0 0 4px 0;
-            letter-spacing: -0.025em;
-        }
+.gw-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--amber);
+}
 
-        .subtitle {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--accent-blue);
-            font-size: 14px;
-            font-weight: 500;
-        }
+/* Typing animation */
+.gw-terminal {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--green);
+  margin-bottom: 28px;
+  min-height: 80px;
+  line-height: 1.9;
+}
 
-        .contact-grid {
-            display: grid;
-            grid-template-columns: auto auto;
-            gap: 8px 20px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
+.gw-terminal .line {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+}
 
-        .contact-grid span {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
+.gw-terminal .line.typed { width: 100%; }
+.gw-terminal .cursor {
+  display: inline-block;
+  width: 8px; height: 13px;
+  background: var(--green);
+  vertical-align: middle;
+  animation: blink .75s step-end infinite;
+  margin-left: 2px;
+}
 
-        h2 {
-            font-size: 16px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-primary);
-            margin: 0 0 20px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
 
-        h2::before {
-            content: '';
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            background-color: var(--accent-blue);
-            border-radius: 50%;
-        }
+.gw-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 28px;
+}
 
-        p {
-            color: var(--text-secondary);
-            margin: 0;
-            font-size: 15px;
-        }
+.gw-meta {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
 
-        .skill-group {
-            margin-bottom: 16px;
-        }
+.gw-meta strong { color: var(--text); font-weight: 500; }
 
-        .skill-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
+.gw-meta .clearance {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  padding: 4px 12px;
+  border: 1px solid rgba(245,158,11,0.3);
+  background: var(--amber-dim);
+  color: var(--amber);
+  border-radius: 3px;
+  letter-spacing: .07em;
+}
 
-        .skill-name { color: var(--text-secondary); }
-        .skill-val { color: var(--accent-blue); font-family: 'JetBrains Mono', monospace; }
+.gw-btn {
+  width: 100%;
+  padding: 14px 24px;
+  background: transparent;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: color .25s;
+}
 
-        .skill-bar-bg {
-            height: 6px;
-            background-color: rgba(30, 41, 59, 0.5);
-            border-radius: 3px;
-            overflow: hidden;
-        }
+.gw-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--amber);
+  transform: translateX(-101%);
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+  z-index: 0;
+}
 
-        .skill-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-blue), #0ea5e9);
-            border-radius: 3px;
-        }
+.gw-btn:hover::before { transform: translateX(0); }
+.gw-btn:hover { color: #040b14; }
 
-        .tag-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+.gw-btn span { position: relative; z-index: 1; }
 
-        .tag {
-            background-color: rgba(56, 189, 248, 0.06);
-            border: 1px solid rgba(56, 189, 248, 0.15);
-            color: var(--accent-blue);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
-        }
+.gw-footer {
+  margin-top: 20px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--faint);
+  text-align: center;
+  letter-spacing: .06em;
+}
 
-        .tag.green {
-            background-color: rgba(52, 211, 153, 0.06);
-            border: 1px solid rgba(52, 211, 153, 0.15);
-            color: var(--accent-green);
-        }
 
-        .timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
+/* ══════════════════════════════════════════
+   MAIN CV
+══════════════════════════════════════════ */
+#cv {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .8s ease .1s, transform .8s ease .1s;
+  pointer-events: none;
+}
 
-        .timeline-item {
-            position: relative;
-            padding-left: 24px;
-            border-left: 2px solid var(--border-color);
-        }
+#cv.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
 
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -6px;
-            top: 4px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: var(--bg-card);
-            border: 2px solid var(--accent-blue);
-        }
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
 
-        .time-meta {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
+@media (min-width: 900px) {
+  .two-col {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0 52px;
+    align-items: start;
+  }
+  .sidebar { position: sticky; top: 32px; }
+}
 
-        .job-title {
-            font-size: 17px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin: 0 0 2px 0;
-        }
+/* ── HERO ── */
+.hero {
+  padding: 72px 0 52px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 56px;
+}
 
-        .company-name {
-            font-size: 14px;
-            color: var(--accent-blue);
-            font-weight: 500;
-            margin-bottom: 12px;
-        }
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--amber);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--amber);
+}
 
-        ul {
-            margin: 0;
-            padding: 0 0 0 16px;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
+.hero h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(38px, 5.5vw, 62px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  color: #fff;
+  margin-bottom: 8px;
+}
 
-        li {
-            margin-bottom: 8px;
-        }
+.hero-role {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(14px, 2vw, 18px);
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: .02em;
+  margin-bottom: 28px;
+}
 
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
+.hero-desc {
+  max-width: 600px;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 36px;
+}
+.hero-desc strong { color: var(--text); font-weight: 500; }
 
-        .history-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            font-size: 14px;
-            border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 10px;
-        }
-        .history-row:last-child { border: none; padding-bottom: 0; }
+.contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
 
-        .history-details h4 { margin: 0; font-weight: 600; color: var(--text-primary); }
-        .history-details p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-        .history-date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.contact-item {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.contact-item a { color: var(--blue-hi); text-decoration: none; transition: color .15s; }
+.contact-item a:hover { color: #fff; }
+.dot { width: 4px; height: 4px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
 
-        @media (min-width: 900px) {
-            .container { grid-template-columns: 1fr 2fr; }
-            .header-card, .summary-card { grid-column: span 2; }
-        }
+/* ── SECTION TITLE ── */
+.section-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--amber);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-        /* Keyframe Animations */
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
+/* ── SIDEBAR ── */
+.sidebar-block { margin-bottom: 38px; }
 
-        @keyframes blink {
-            from, to { border-color: transparent }
-            50% { border-color: var(--accent-green); }
-        }
-    </style>
+.cred-list { display: flex; flex-direction: column; gap: 7px; }
+
+.cred-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: border-color .2s, background .2s;
+}
+.cred-item:hover { border-color: var(--amber); background: var(--surface2); }
+
+.cred-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+.cred-name { font-size: 12.5px; color: var(--text); font-weight: 500; line-height: 1.3; }
+
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--surface);
+  white-space: nowrap;
+  transition: border-color .15s, color .15s;
+}
+.tag:hover { border-color: var(--amber); color: var(--text); }
+.tag.hi { border-color: rgba(125,211,252,0.25); color: var(--blue-hi); background: rgba(125,211,252,0.05); }
+
+.stat-row { display: flex; flex-direction: column; gap: 0; }
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.stat-item:last-child { border-bottom: none; }
+.stat-label { font-size: 12px; color: var(--muted); }
+.stat-val { font-family: var(--mono); font-size: 11.5px; color: var(--amber); font-weight: 500; }
+
+.lang-row { display: flex; flex-direction: column; gap: 9px; }
+.lang-item { display: flex; justify-content: space-between; align-items: center; }
+.lang-name { font-size: 13px; color: var(--text); font-weight: 500; }
+.lang-level { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+
+.membership {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 13px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+}
+.membership-icon {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--amber);
+  background: var(--amber-dim);
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  border: 1px solid var(--amber-mid);
+}
+.membership-info { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+.membership-info strong { color: var(--text); font-weight: 500; }
+
+/* ── TIMELINE ── */
+.timeline { display: flex; flex-direction: column; }
+
+.tl-item {
+  display: grid;
+  grid-template-columns: 1px 1fr;
+  gap: 0 24px;
+  padding-bottom: 34px;
+}
+.tl-item:last-child { padding-bottom: 0; }
+
+.tl-line { background: var(--border); position: relative; margin-top: 6px; }
+.tl-line::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--amber);
+  transition: border-color .2s;
+}
+.tl-item.past .tl-line::before { border-color: var(--faint); }
+.tl-item:hover .tl-line::before { border-color: #fff; }
+
+.tl-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.badge.active { background: rgba(245,158,11,0.13); color: var(--amber); border: 1px solid rgba(245,158,11,0.28); }
+.badge.past   { background: var(--surface); color: var(--faint); border: 1px solid var(--border); }
+.badge.ind    { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+
+.tl-role { font-family: 'Sora', sans-serif; font-size: 16.5px; font-weight: 600; color: #fff; margin-bottom: 2px; line-height: 1.2; }
+.tl-org  { font-size: 13px; color: var(--blue-hi); font-weight: 500; margin-bottom: 13px; }
+
+.tl-points { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.tl-points li { font-size: 13.5px; color: var(--muted); padding-left: 16px; position: relative; line-height: 1.6; }
+.tl-points li::before { content: '›'; position: absolute; left: 0; color: var(--amber); font-weight: 700; }
+
+/* ── EDUCATION ── */
+.edu-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  transition: border-color .2s;
+}
+.edu-item:hover { border-color: var(--amber); }
+.edu-item:last-child { margin-bottom: 0; }
+.edu-school { font-family: var(--mono); font-size: 10.5px; color: var(--faint); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
+.edu-degree { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.edu-note { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.edu-highlight {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--amber);
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-mid);
+  padding: 3px 10px;
+  border-radius: 3px;
+}
+
+/* ── COURSES ── */
+.course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.course-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 15px;
+  transition: border-color .2s;
+}
+.course-item:hover { border-color: var(--amber); }
+.course-provider { font-family: var(--mono); font-size: 10px; color: var(--amber); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
+.course-name { font-size: 13px; color: var(--text); font-weight: 500; line-height: 1.4; }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 80px;
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.footer-note { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+.footer-note a { color: var(--blue-hi); text-decoration: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 899px) {
+  .hero { padding: 48px 0 40px; }
+  .two-col { display: block; }
+  .sidebar { margin-bottom: 40px; }
+  .gw-box { padding: 44px 28px 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal, #cv { opacity: 1; transform: none; transition: none; }
+  .gw-terminal .line { width: 100% !important; }
+}
+</style>
 </head>
 <body>
 
-    <!-- 🕹️ INTERACTIVE GATEWAY OVERLAY -->
-    <div id="portal-overlay">
-        <div class="portal-box">
-            <div class="portal-terminal-text">> connection_established...</div>
-            <div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 30px; line-height: 1.5;">
-                Secure handshake complete. Ready to decrypt dossier for Operative: <strong>AYFANTIDIS</strong>.
-            </div>
-            <button class="portal-btn" onclick="unlockProfile()">[ INITIALIZE ACCESS ]</button>
-        </div>
+<!-- ══════════════════════════════════════════
+     GATEWAY
+══════════════════════════════════════════ -->
+<div id="gateway">
+  <div class="gw-box">
+    <div class="gw-chrome">
+      <div class="gw-dot"></div>
+      <div class="gw-dot"></div>
+      <div class="gw-dot"></div>
+      <div class="gw-chrome-label">SECURE_DOSSIER_v2.6 — AES-256</div>
     </div>
 
-    <!-- 📊 THE DASHBOARD CONTAINER -->
-    <div class="container" id="main-cv-content">
+    <div class="gw-content">
+      <div class="gw-label">Identity verification</div>
 
-        <!-- HEADER HUD CARD -->
-        <header class="card header-card">
-            <div>
-                <h1>Andreas Yfantidis</h1>
-                <div class="subtitle">Senior IT Auditor &amp; Cyber Security Specialist</div>
-            </div>
-            <div class="contact-grid">
-                <div>Location:</div><span>Piraeus, Greece</span>
-                <div>Email:</div><span>ayfantidis@yahoo.com</span>
-                <div>Phone:</div><span>+30 695 176 7550</span>
-                <div>LinkedIn:</div><span>@Andreas Yfantidis</span>
-            </div>
-        </header>
+      <div class="gw-terminal" id="terminal">
+        <span class="line" id="l1"></span>
+        <span class="line" id="l2"></span>
+        <span class="line" id="l3"></span>
+        <span class="cursor" id="cursor"></span>
+      </div>
 
-        <!-- EXECUTIVE SUMMARY -->
-        <section class="card summary-card">
-            <h2>Executive Profile</h2>
-            <p>
-                Results-driven, multitasking IT security professional and Big Four alumnus with comprehensive technical and academic experience. Adept at managing IT/IS risk consulting, infrastructure vulnerability profiling, and high-impact incident negotiations. Specialized in data analytics for sophisticated fraud detection pipelines, with current domain expansion into Industrial Automation Control Systems (IACS) and Business Continuity frameworks.
-            </p>
-        </section>
+      <div class="gw-divider"></div>
 
-        <!-- LEFT COLUMN: SIDEBAR METRICS -->
-        <div style="display: flex; flex-direction: column; gap: 30px;">
+      <div class="gw-meta">
+        Handshake complete. This dossier contains the professional record of
+        <strong>Andreas Yfantidis</strong> — Senior IT Auditor and Cyber Security Specialist.
+        <br><br>
+        Proceed to review credentials, experience, and security domain expertise.
+        <div class="clearance">CLEARANCE LEVEL: PROFESSIONAL · ISACA #1343130</div>
+      </div>
 
-            <!-- CORE METRICS -->
-            <div class="card">
-                <h2>Core Matrix</h2>
-                <div class="skill-group">
-                    <div class="skill-info"><span class="skill-name">IT/IS Audit &amp; Governance</span><span class="skill-val">95%</span></div>
-                    <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%;"></div></div>
-                </div>
-                <div class="skill-group">
-                    <div class="skill-info"><span class="skill-name">Threat Profiling &amp; Modeling</span><span class="skill-val">90%</span></div>
-                    <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%;"></div></div>
-                </div>
-                <div class="skill-group">
-                    <div class="skill-info"><span class="skill-name">Business Continuity (ISO 22301)</span><span class="skill-val">85%</span></div>
-                    <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%;"></div></div>
-                </div>
-                <div class="skill-group">
-                    <div class="skill-info"><span class="skill-name">Fraud Data Analytics</span><span class="skill-val">88%</span></div>
-                    <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 88%;"></div></div>
-                </div>
-                <div class="skill-group">
-                    <div class="skill-info"><span class="skill-name">IACS Security (ISA/IEC 62443)</span><span class="skill-val">80%</span></div>
-                    <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%;"></div></div>
-                </div>
-            </div>
+      <button class="gw-btn" id="access-btn" onclick="unlockCV()">
+        <span>[ Access Profile ]</span>
+      </button>
 
-            <!-- CREDENTIALS -->
-            <div class="card">
-                <h2>Verified Credentials</h2>
-                <div class="tag-group" style="margin-bottom: 20px;">
-                    <div class="tag">ISO 22301 Lead Auditor</div>
-                    <div class="tag">IBM Cybersecurity Analyst</div>
-                    <div class="tag">ISC2 Certified in Cybersecurity (CC)</div>
-                    <div class="tag">Microsoft SC-900</div>
-                    <div class="tag">Microsoft AZ-900</div>
-                    <div class="tag">Fortinet NSE-2</div>
-                </div>
-                <div style="border-top: 1px solid var(--border-color); padding-top: 15px;">
-                    <div class="tag" style="background-color: transparent; border-color: var(--border-color); color: var(--text-secondary); width: max-content;">ISACA Member // No. 1343130</div>
-                </div>
-            </div>
-
-            <!-- TECH ENGINE -->
-            <div class="card">
-                <h2>Technical &amp; Language Engine</h2>
-                <div style="margin-bottom: 20px;">
-                    <div class="tag-group">
-                        <div class="tag green">PowerBI</div>
-                        <div class="tag green">Python</div>
-                        <div class="tag green">Jira</div>
-                        <div class="tag green">Sharepoint</div>
-                        <div class="tag green">Arduino Ecosystem</div>
-                        <div class="tag green">LaTeX Implementation</div>
-                    </div>
-                </div>
-                <div style="border-top: 1px solid var(--border-color); padding-top: 15px;">
-                    <div class="tag-group">
-                        <div class="tag" style="color: #fff; border-color: var(--border-color);">Greek (Native)</div>
-                        <div class="tag" style="color: #fff; border-color: var(--border-color);">English (CAE C1)</div>
-                        <div class="tag" style="color: #fff; border-color: var(--border-color);">French (Sorbonne C1)</div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- RIGHT COLUMN: CHRONICLES -->
-        <div style="display: flex; flex-direction: column; gap: 30px;">
-
-            <!-- EXPERIENCES -->
-            <div class="card">
-                <h2>Professional Engagements</h2>
-                <div class="timeline">
-                    
-                    <div class="timeline-item">
-                        <div class="time-meta">02/2022 — PRESENT</div>
-                        <div class="job-title">Senior IT Auditor &amp; Cyber Security Advisor</div>
-                        <div class="company-name">Top-Tier Professional Services Firm (Big Four Alumnus)</div>
-                        <ul>
-                            <li>Spearheaded compliance blueprints, Business Continuity alignment, and SOC reporting architectures.</li>
-                            <li>Formulated granular User Acceptance Testing (UAT) backup verification methodologies to prevent critical operational down-time.</li>
-                            <li>Developed interactive data pipelines and PowerBI analytics models to monitor fraud vectors in sensitive energy sector frameworks.</li>
-                            <li>Directly mitigated complex risk architectures across 7 separate high-threat corporate incidents.</li>
-                        </ul>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="time-meta">10/2019 — 06/2021</div>
-                        <div class="job-title">Risk Consultant &amp; Trainee</div>
-                        <div class="company-name">Aegean Experts</div>
-                        <ul>
-                            <li>Built comprehensive IT General Controls (ITGC) frameworks and Risk-Control matrices explicitly aligned with GDPR mandates.</li>
-                            <li>Conducted predictive threat modeling assessments to tailor infrastructure security controls.</li>
-                            <li>Utilized quantitative data structures to optimize systemic energy analytics projects.</li>
-                        </ul>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="time-meta">02/2018 — PRESENT</div>
-                        <div class="job-title">Academic Consultant (Independent)</div>
-                        <div class="company-name">Freelance Project Architecture</div>
-                        <ul>
-                            <li>Delivered targeted statistical analysis, risk assessments, and IT infrastructure modeling across 20+ comprehensive client portfolios.</li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- OPERATIONAL BACKGROUND -->
-            <div class="card">
-                <h2>Operational Background</h2>
-                <div class="history-list">
-                    <div class="history-row">
-                        <div class="history-details">
-                            <h4>Eratosthenes PLC</h4>
-                            <p>Back Office Analyst — Layer 1 technical support &amp; cadastral database management.</p>
-                        </div>
-                        <div class="history-date">04/2019 — 07/2019</div>
-                    </div>
-                    <div class="history-row">
-                        <div class="history-details">
-                            <h4>Calme Boutique Hotel</h4>
-                            <p>Front Office Agent — Data-driven spreadsheet logging and operational workflows.</p>
-                        </div>
-                        <div class="history-date">05/2018 — 09/2018</div>
-                    </div>
-                    <div class="history-row">
-                        <div class="history-details">
-                            <h4>Municipality of Piraeus</h4>
-                            <p>Administrative Trainee — Handled analytics for "Blue Growth" initiatives &amp; refugee logistics tracking.</p>
-                        </div>
-                        <div class="history-date">04/2016 — 06/2016</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ACADEMICS & RESEARCH -->
-            <div class="card">
-                <h2>Strategic Research &amp; Education</h2>
-                <div class="timeline">
-                    
-                    <div class="timeline-item">
-                        <div class="time-meta">UNIVERSITY OF PIRAEUS</div>
-                        <div class="job-title">MSc in Energy: Strategy, Law &amp; Economics</div>
-                        <ul>
-                            <li>Defended a highly rigorous academic thesis with a perfect <strong>10/10 grading</strong> layout via LaTeX modeling.</li>
-                            <li>Focused on strategic international energy relations, complex resource policy, and quantitative data analytics.</li>
-                        </ul>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="time-meta">UNIVERSITY OF PIRAEUS</div>
-                        <div class="job-title">BA in International, Economic &amp; Business Studies</div>
-                        <ul>
-                            <li>Foundational research in Financial Law, Environmental Law, and International Corporate Policy.</li>
-                        </ul>
-                    </div>
-
-                </div>
-
-                <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-                    <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; color: var(--accent-blue);">
-                        Global Publications &amp; Course Telemetry
-                    </div>
-                    <p style="font-size: 13px; margin-bottom: 12px;">
-                        Published academic studies exploring systemic <strong>Hybrid Warfare</strong> tactics, regional separatism models, and the expanding economic structures of the <strong>BRICS nations</strong>.
-                    </p>
-                    <div class="tag-group">
-                        <div class="tag">ISC2: ICS Security Frameworks</div>
-                        <div class="tag">IIA: Advanced Internal Audit Data Analytics</div>
-                        <div class="tag">SDU: European Separatism Dynamics</div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
+      <div class="gw-footer">Encrypted transmission · TLS 1.3 · Session expires on close</div>
     </div>
+  </div>
+</div>
 
-    <!-- 🛠️ INTERACTIVE TRANSITION INTERFACE SCRIPT -->
-    <script>
-        function unlockProfile() {
-            // Smoothly hide the gateway screen
-            const overlay = document.getElementById('portal-overlay');
-            overlay.classList.add('fade-out');
-            
-            // Re-enable smooth scrolling for the page
-            document.body.style.overflowY = 'auto';
-            
-            // Smoothly slide and fade in the CV Dashboard content
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                const content = document.getElementById('main-cv-content');
-                content.classList.add('reveal');
-            }, 600);
-        }
 
-        // Keep page locked scrolling when splash screen is active
-        window.onload = function() {
-            document.body.style.overflowY = 'hidden';
-        };
-    </script>
+<!-- ══════════════════════════════════════════
+     CV
+══════════════════════════════════════════ -->
+<div id="cv">
+<div class="page">
 
+  <header class="hero reveal">
+    <div class="hero-eyebrow">IT Audit · Cybersecurity · Governance</div>
+    <h1>Andreas<br>Yfantidis</h1>
+    <div class="hero-role">Senior IT Auditor &amp; Cyber Security Specialist</div>
+    <p class="hero-desc">
+      Big Four-trained professional with deep hands-on experience in <strong>IT/IS risk governance</strong>,
+      <strong>M365 &amp; Entra ID security</strong>, and <strong>OT/ICS audit frameworks</strong> (IEC 62443).
+      Combines rigorous compliance methodology with practical technical execution — from building GITC control
+      libraries to authoring fraud analytics pipelines in regulated energy environments.
+    </p>
+    <div class="contact-row">
+      <div class="contact-item"><span class="dot"></span>Piraeus, Greece</div>
+      <div class="contact-item"><span class="dot"></span><a href="mailto:ayfantidis@yahoo.com">ayfantidis@yahoo.com</a></div>
+      <div class="contact-item"><span class="dot"></span><a href="tel:+306951767550">+30 695 176 7550</a></div>
+      <div class="contact-item"><span class="dot"></span><a href="https://linkedin.com/in/andreas-yfantidis" target="_blank" rel="noopener">LinkedIn</a></div>
+    </div>
+  </header>
+
+  <div class="two-col">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="sidebar-block reveal">
+        <div class="section-title">Certifications</div>
+        <div class="cred-list">
+          <div class="cred-item"><div class="cred-dot"></div><div class="cred-name">ISO 22301 Lead Auditor</div></div>
+          <div class="cred-item"><div class="cred-dot"></div><div class="cred-name">ISC2 Certified in Cybersecurity (CC)</div></div>
+          <div class="cred-item"><div class="cred-dot"></div><div class="cred-name">IBM Cybersecurity Analyst</div></div>
+          <div class="cred-item"><div class="cred-dot"></div><div class="cred-name">Microsoft SC-900</div></div>
+          <div class="cred-item"><div class="cred-dot"></div><div class="cred-name">Microsoft AZ-900</div></div>
+          <div class="cred-item"><div class="cred-dot"></div><div class="cred-name">Fortinet NSE-2</div></div>
+        </div>
+      </div>
+
+      <div class="sidebar-block reveal">
+        <div class="section-title">Membership</div>
+        <div class="membership">
+          <div class="membership-icon">ISACA</div>
+          <div class="membership-info"><strong>Member #1343130</strong><br>IT/IS Audit, Risk &amp; Governance</div>
+        </div>
+      </div>
+
+      <div class="sidebar-block reveal">
+        <div class="section-title">Domain depth</div>
+        <div class="stat-row">
+          <div class="stat-item"><span class="stat-label">IT/IS Audit &amp; Governance</span><span class="stat-val">Big Four</span></div>
+          <div class="stat-item"><span class="stat-label">M365 / Entra ID</span><span class="stat-val">Advanced</span></div>
+          <div class="stat-item"><span class="stat-label">OT/ICS — IEC 62443</span><span class="stat-val">Specialist</span></div>
+          <div class="stat-item"><span class="stat-label">Fraud Data Analytics</span><span class="stat-val">Advanced</span></div>
+          <div class="stat-item"><span class="stat-label">Business Continuity</span><span class="stat-val">ISO 22301 LA</span></div>
+          <div class="stat-item"><span class="stat-label">Cloud (Azure)</span><span class="stat-val">Practitioner</span></div>
+          <div class="stat-item"><span class="stat-label">GDPR / Law 4624/2019</span><span class="stat-val">Applied</span></div>
+        </div>
+      </div>
+
+      <div class="sidebar-block reveal">
+        <div class="section-title">Technical stack</div>
+        <div class="tag-cloud">
+          <span class="tag hi">Python</span>
+          <span class="tag hi">Power BI</span>
+          <span class="tag hi">Azure</span>
+          <span class="tag hi">M365</span>
+          <span class="tag">Jira</span>
+          <span class="tag">SharePoint</span>
+          <span class="tag">Entra ID</span>
+          <span class="tag">Git / GitHub</span>
+          <span class="tag">LaTeX</span>
+          <span class="tag">Arduino</span>
+        </div>
+      </div>
+
+      <div class="sidebar-block reveal">
+        <div class="section-title">Languages</div>
+        <div class="lang-row">
+          <div class="lang-item"><span class="lang-name">Greek</span><span class="lang-level">Native</span></div>
+          <div class="lang-item"><span class="lang-name">English</span><span class="lang-level">CAE C1</span></div>
+          <div class="lang-item"><span class="lang-name">French</span><span class="lang-level">Sorbonne C1</span></div>
+          <div class="lang-item"><span class="lang-name">German</span><span class="lang-level">Basic</span></div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+
+      <section style="margin-bottom:50px" class="reveal">
+        <div class="section-title">Experience</div>
+        <div class="timeline">
+
+          <div class="tl-item">
+            <div class="tl-line"></div>
+            <div class="tl-body">
+              <div class="tl-meta"><span>09/2023 — 05/2026</span><span class="badge active">Active</span></div>
+              <div class="tl-role">Senior IT Auditor</div>
+              <div class="tl-org">KPMG</div>
+              <ul class="tl-points">
+                <li>Designed and deployed a web-based GITC controls workspace covering library management, D&amp;I/ToE testing, evidence tracking, and deficiency workflows.</li>
+                <li>Developed UAT backup test case methodologies to eliminate critical operational downtime risk in regulated environments.</li>
+                <li>Built Power BI fraud analytics pipelines monitoring threat vectors across high-value energy sector engagements.</li>
+                <li>Authored Business Continuity and SOC reporting compliance frameworks; directly resolved 7 complex, high-impact security incidents.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-line"></div>
+            <div class="tl-body">
+              <div class="tl-meta"><span>02/2022 — 08/2023</span><span class="badge active">Active</span></div>
+              <div class="tl-role">Cyber Security Advisor</div>
+              <div class="tl-org">KPMG</div>
+              <ul class="tl-points">
+                <li>Delivered IS/IT risk consulting across infrastructure vulnerability profiling and incident response.</li>
+                <li>Expanded remit into IACS security and hybrid cloud audit (Azure, Microsoft 365, Entra ID).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-item past">
+            <div class="tl-line"></div>
+            <div class="tl-body">
+              <div class="tl-meta"><span>01/2020 — 06/2021</span><span class="badge past">Past</span></div>
+              <div class="tl-role">Risk Consultant</div>
+              <div class="tl-org">Aegean Experts</div>
+              <ul class="tl-points">
+                <li>Built ITGC risk-control matrices aligned to GDPR mandates across multiple client environments.</li>
+                <li>Conducted predictive threat modeling and infrastructure security control assessments.</li>
+                <li>Delivered energy sector data analytics projects using quantitative modeling.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-item past">
+            <div class="tl-line"></div>
+            <div class="tl-body">
+              <div class="tl-meta"><span>10/2019 — 01/2020</span><span class="badge past">Past</span></div>
+              <div class="tl-role">Trainee Risk Consultant</div>
+              <div class="tl-org">Aegean Experts</div>
+              <ul class="tl-points">
+                <li>Supported internal audit reporting and threat modeling control option assessments.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-item past">
+            <div class="tl-line"></div>
+            <div class="tl-body">
+              <div class="tl-meta"><span>02/2018 — Present</span><span class="badge ind">Independent</span></div>
+              <div class="tl-role">Academic Consultant</div>
+              <div class="tl-org">Freelance</div>
+              <ul class="tl-points">
+                <li>Consulting and tutoring across 20+ projects spanning Accounting, Finance, Risk Management, and Information Technology.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section style="margin-bottom:50px" class="reveal">
+        <div class="section-title">Earlier roles</div>
+        <div class="timeline">
+
+          <div class="tl-item past">
+            <div class="tl-line"></div>
+            <div class="tl-body">
+              <div class="tl-meta"><span>04/2019 — 07/2019</span><span class="badge past">Past</span></div>
+              <div class="tl-role">Back Office Analyst</div>
+              <div class="tl-org">Eratosthenes PLC</div>
+              <ul class="tl-points"><li>Cadastral case registration and L1 technical support operations.</li></ul>
+            </div>
+          </div>
+
+          <div class="tl-item past">
+            <div class="tl-line"></div>
+            <div class="tl-body">
+              <div class="tl-meta"><span>05/2018 — 09/2018</span><span class="badge past">Past</span></div>
+              <div class="tl-role">Front Office Agent</div>
+              <div class="tl-org">Calme Boutique Hotel</div>
+              <ul class="tl-points"><li>Daily operational reporting and workflow management via MS Excel.</li></ul>
+            </div>
+          </div>
+
+          <div class="tl-item past">
+            <div class="tl-line"></div>
+            <div class="tl-body">
+              <div class="tl-meta"><span>04/2016 — 06/2016</span><span class="badge past">Past</span></div>
+              <div class="tl-role">Administrative Trainee</div>
+              <div class="tl-org">Municipality of Piraeus</div>
+              <ul class="tl-points"><li>Statistical reporting for refugee logistics; "Blue Growth" initiative participation.</li></ul>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section style="margin-bottom:50px" class="reveal">
+        <div class="section-title">Education</div>
+        <div class="edu-item">
+          <div class="edu-school">University of Piraeus</div>
+          <div class="edu-degree">MSc — Energy: Strategy, Law &amp; Economics</div>
+          <div class="edu-note">English-language program focused on international energy relations, resource policy, and quantitative data analytics.</div>
+          <div class="edu-highlight">Thesis grade: 10 / 10 — LaTeX implementation</div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-school">University of Piraeus · 2012 — 2018</div>
+          <div class="edu-degree">BA — International, Economic &amp; Business Studies</div>
+          <div class="edu-note">International &amp; financial law, environmental law, business administration, public policy.</div>
+        </div>
+      </section>
+
+      <section class="reveal">
+        <div class="section-title">Courses &amp; research</div>
+        <div class="course-grid">
+          <div class="course-item"><div class="course-provider">ISC2</div><div class="course-name">Cybersecurity in Industrial Control Systems</div></div>
+          <div class="course-item"><div class="course-provider">IIA</div><div class="course-name">Data Analytics for Internal Auditing</div></div>
+          <div class="course-item"><div class="course-provider">Univ. of Southern Denmark</div><div class="course-name">Separatism in Europe</div></div>
+          <div class="course-item"><div class="course-provider">Udemy</div><div class="course-name">R for Statistics</div></div>
+          <div class="course-item"><div class="course-provider">EdX</div><div class="course-name">Python Basics for Data Science</div></div>
+          <div class="course-item"><div class="course-provider">Coursera</div><div class="course-name">Global History &amp; Intro to Philosophy</div></div>
+        </div>
+        <div style="margin-top:12px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:6px">
+          <div class="course-provider" style="margin-bottom:6px">Academic publications</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7">
+            Published research on hybrid warfare tactics, regional separatism, and BRICS economic structures.
+            Co-authored comparative governance study: ISO/IEC 27001:2022 vs. China's MLPS 2.0 across manufacturing and financial services sectors.
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-note">Andreas Yfantidis · <a href="mailto:ayfantidis@yahoo.com">ayfantidis@yahoo.com</a></div>
+    <div class="footer-note">Built by hand — no templates</div>
+  </footer>
+
+</div>
+</div>
+
+<script>
+// ── TYPING SEQUENCE ──────────────────────────────
+const lines = [
+  '> Verifying identity token...',
+  '> Clearance confirmed. ISACA #1343130',
+  '> Loading dossier: A.YFANTIDIS...'
+];
+
+const ids = ['l1','l2','l3'];
+let li = 0;
+
+function typeLine(idx, text, cb) {
+  const el = document.getElementById(ids[idx]);
+  const cursor = document.getElementById('cursor');
+  el.textContent = '';
+  let i = 0;
+  cursor.style.display = 'none';
+
+  const iv = setInterval(() => {
+    el.textContent += text[i++];
+    if (i >= text.length) {
+      clearInterval(iv);
+      cursor.style.display = 'inline-block';
+      setTimeout(cb, 320);
+    }
+  }, 32);
+}
+
+function runTyping() {
+  typeLine(0, lines[0], () =>
+    typeLine(1, lines[1], () =>
+      typeLine(2, lines[2], () => {
+        document.getElementById('access-btn').style.opacity = '1';
+        document.getElementById('access-btn').style.pointerEvents = 'auto';
+      })
+    )
+  );
+}
+
+// Fade button in only after typing completes
+const btn = document.getElementById('access-btn');
+btn.style.opacity = '0';
+btn.style.pointerEvents = 'none';
+btn.style.transition = 'opacity .4s ease';
+
+window.addEventListener('load', () => {
+  setTimeout(runTyping, 400);
+});
+
+// ── UNLOCK ──────────────────────────────────────
+function unlockCV() {
+  const gw = document.getElementById('gateway');
+  const cv = document.getElementById('cv');
+  gw.classList.add('dismissing');
+  setTimeout(() => {
+    gw.style.display = 'none';
+    document.body.style.overflowY = 'auto';
+    cv.classList.add('visible');
+    initReveal();
+  }, 700);
+}
+
+// ── SCROLL REVEAL ───────────────────────────────
+function initReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// Lock scroll while gateway is up
+document.body.style.overflowY = 'hidden';
+</script>
 </body>
 </html>
