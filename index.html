@@ -251,6 +251,69 @@ body {
   letter-spacing: .06em;
 }
 
+/* Verified banner */
+.gw-verified {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 11px 18px;
+  border: 1px solid rgba(52,211,153,0.35);
+  background: rgba(52,211,153,0.07);
+  border-radius: 3px;
+  margin-bottom: 22px;
+}
+
+.gw-verified.show {
+  display: flex;
+  animation: verifiedIn .4s cubic-bezier(.2,0,.2,1) both;
+}
+
+.gw-verified-icon {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  animation: checkPop .35s .1s cubic-bezier(.2,0,.2,1) both;
+}
+
+.gw-verified-icon::after {
+  content: '';
+  display: block;
+  width: 5px; height: 9px;
+  border-right: 2px solid var(--green);
+  border-bottom: 2px solid var(--green);
+  transform: rotate(45deg) translate(-1px,-1px);
+}
+
+.gw-verified-text {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--green);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.gw-verified-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(52,211,153,0.55);
+  letter-spacing: .06em;
+}
+
+@keyframes verifiedIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes checkPop {
+  0%   { transform: scale(0); opacity: 0; }
+  70%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 
 /* ══════════════════════════════════════════
    MAIN CV
@@ -286,9 +349,44 @@ body {
 
 /* ── HERO ── */
 .hero {
-  padding: 72px 0 52px;
+  padding: 88px 0 72px;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 56px;
+  margin-bottom: 64px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 60px;
+  align-items: center;
+}
+
+.hero-text { min-width: 0; }
+
+.hero-photo-wrap {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-photo {
+  width: 196px;
+  height: 196px;
+  border-radius: 4px;
+  object-fit: cover;
+  object-position: center top;
+  border: 1px solid var(--border);
+  filter: grayscale(12%) contrast(1.05);
+  display: block;
+  box-shadow: 0 0 0 4px var(--surface), 0 0 0 5px var(--border);
+}
+
+.hero-photo-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--faint);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 .hero-eyebrow {
@@ -297,7 +395,7 @@ body {
   color: var(--amber);
   letter-spacing: .12em;
   text-transform: uppercase;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -310,12 +408,12 @@ body {
 
 .hero h1 {
   font-family: 'Sora', sans-serif;
-  font-size: clamp(38px, 5.5vw, 62px);
+  font-size: clamp(40px, 5.5vw, 64px);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.04;
   color: #fff;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .hero-role {
@@ -324,22 +422,22 @@ body {
   font-weight: 300;
   color: var(--muted);
   letter-spacing: .02em;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
 .hero-desc {
-  max-width: 600px;
+  max-width: 580px;
   font-size: 15px;
   color: var(--muted);
-  line-height: 1.8;
-  margin-bottom: 36px;
+  line-height: 1.85;
+  margin-bottom: 40px;
 }
 .hero-desc strong { color: var(--text); font-weight: 500; }
 
 .contact-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 22px;
+  gap: 10px 24px;
 }
 
 .contact-item {
@@ -559,7 +657,14 @@ footer {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 899px) {
-  .hero { padding: 48px 0 40px; }
+  .hero {
+    padding: 48px 0 44px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 36px 0;
+  }
+  .hero-photo-wrap { flex-direction: row; justify-content: flex-start; gap: 18px; order: -1; }
+  .hero-photo { width: 100px; height: 100px; }
   .two-col { display: block; }
   .sidebar { margin-bottom: 40px; }
   .gw-box { padding: 44px 28px 36px; }
@@ -601,7 +706,15 @@ footer {
         <strong>Andreas Yfantidis</strong> — Senior IT Auditor and Cyber Security Specialist.
         <br><br>
         Proceed to review credentials, experience, and security domain expertise.
-        <div class="clearance">CLEARANCE LEVEL: PROFESSIONAL · ISACA #1343130</div>
+        <div class="clearance">CLEARANCE LEVEL: PROFESSIONAL</div>
+      </div>
+
+      <div class="gw-verified" id="verified-banner">
+        <div class="gw-verified-icon"></div>
+        <div>
+          <div class="gw-verified-text">Identity Verified</div>
+          <div class="gw-verified-sub">Token valid · Session authenticated</div>
+        </div>
       </div>
 
       <button class="gw-btn" id="access-btn" onclick="unlockCV()">
@@ -621,20 +734,26 @@ footer {
 <div class="page">
 
   <header class="hero reveal">
-    <div class="hero-eyebrow">IT Audit · Cybersecurity · Governance</div>
-    <h1>Andreas<br>Yfantidis</h1>
-    <div class="hero-role">Senior IT Auditor &amp; Cyber Security Specialist</div>
-    <p class="hero-desc">
-      Big Four-trained professional with deep hands-on experience in <strong>IT/IS risk governance</strong>,
-      <strong>M365 &amp; Entra ID security</strong>, and <strong>OT/ICS audit frameworks</strong> (IEC 62443).
-      Combines rigorous compliance methodology with practical technical execution — from building GITC control
-      libraries to authoring fraud analytics pipelines in regulated energy environments.
-    </p>
-    <div class="contact-row">
-      <div class="contact-item"><span class="dot"></span>Piraeus, Greece</div>
-      <div class="contact-item"><span class="dot"></span><a href="mailto:ayfantidis@yahoo.com">ayfantidis@yahoo.com</a></div>
-      <div class="contact-item"><span class="dot"></span><a href="tel:+306951767550">+30 695 176 7550</a></div>
-      <div class="contact-item"><span class="dot"></span><a href="https://linkedin.com/in/andreas-yfantidis" target="_blank" rel="noopener">LinkedIn</a></div>
+    <div class="hero-text">
+      <div class="hero-eyebrow">IT Audit · Cybersecurity · Governance</div>
+      <h1>Andreas<br>Yfantidis</h1>
+      <div class="hero-role">Senior IT Auditor &amp; Cyber Security Specialist</div>
+      <p class="hero-desc">
+        Big Four-trained professional with deep hands-on experience in <strong>IT/IS risk governance</strong>,
+        <strong>M365 &amp; Entra ID security</strong>, and <strong>OT/ICS audit frameworks</strong> (IEC 62443).
+        Combines rigorous compliance methodology with practical technical execution — from building GITC control
+        libraries to authoring fraud analytics pipelines in regulated energy environments.
+      </p>
+      <div class="contact-row">
+        <div class="contact-item"><span class="dot"></span>Piraeus, Greece</div>
+        <div class="contact-item"><span class="dot"></span><a href="mailto:ayfantidis@yahoo.com">ayfantidis@yahoo.com</a></div>
+        <div class="contact-item"><span class="dot"></span><a href="tel:+306951767550">+30 695 176 7550</a></div>
+        <div class="contact-item"><span class="dot"></span><a href="https://linkedin.com/in/andreas-yfantidis" target="_blank" rel="noopener">LinkedIn</a></div>
+      </div>
+    </div>
+    <div class="hero-photo-wrap">
+      <img class="hero-photo" src="Φωτογραφία_Υφαντίδης.jpg" alt="Andreas Yfantidis">
+      <div class="hero-photo-label">A. Yfantidis</div>
     </div>
   </header>
 
@@ -864,51 +983,72 @@ footer {
 
 <script>
 // ── TYPING SEQUENCE ──────────────────────────────
+// Three lines must finish within ~1.8s total so VERIFIED lands by 2s
 const lines = [
   '> Verifying identity token...',
-  '> Clearance confirmed. ISACA #1343130',
+  '> Signature valid. Access granted.',
   '> Loading dossier: A.YFANTIDIS...'
 ];
 
 const ids = ['l1','l2','l3'];
-let li = 0;
+
+// Budget: 600ms total typing per line at ~28ms/char for short lines
+// lines are ~28, ~33, ~34 chars → ~780ms + 560ms + 952ms = ~2.3s raw
+// Speed up to 22ms/char to land under 2s comfortably
+const CHAR_SPEED = 20;
+const LINE_PAUSE = 180;
 
 function typeLine(idx, text, cb) {
-  const el = document.getElementById(ids[idx]);
-  const cursor = document.getElementById('cursor');
+  const el  = document.getElementById(ids[idx]);
+  const cur = document.getElementById('cursor');
   el.textContent = '';
   let i = 0;
-  cursor.style.display = 'none';
+  cur.style.display = 'none';
 
   const iv = setInterval(() => {
     el.textContent += text[i++];
     if (i >= text.length) {
       clearInterval(iv);
-      cursor.style.display = 'inline-block';
-      setTimeout(cb, 320);
+      cur.style.display = 'inline-block';
+      setTimeout(cb, LINE_PAUSE);
     }
-  }, 32);
+  }, CHAR_SPEED);
+}
+
+function showVerified() {
+  const banner = document.getElementById('verified-banner');
+  const btn    = document.getElementById('access-btn');
+  const cur    = document.getElementById('cursor');
+
+  // Stop blinking cursor
+  cur.style.display = 'none';
+
+  // Flash VERIFIED banner
+  banner.classList.add('show');
+
+  // Fade in button 300ms after banner
+  setTimeout(() => {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  }, 300);
 }
 
 function runTyping() {
   typeLine(0, lines[0], () =>
     typeLine(1, lines[1], () =>
-      typeLine(2, lines[2], () => {
-        document.getElementById('access-btn').style.opacity = '1';
-        document.getElementById('access-btn').style.pointerEvents = 'auto';
-      })
+      typeLine(2, lines[2], showVerified)
     )
   );
 }
 
-// Fade button in only after typing completes
+// Button hidden until verified
 const btn = document.getElementById('access-btn');
 btn.style.opacity = '0';
 btn.style.pointerEvents = 'none';
-btn.style.transition = 'opacity .4s ease';
+btn.style.transition = 'opacity .45s ease';
 
 window.addEventListener('load', () => {
-  setTimeout(runTyping, 400);
+  setTimeout(runTyping, 350);
 });
 
 // ── UNLOCK ──────────────────────────────────────
