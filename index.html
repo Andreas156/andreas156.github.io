@@ -149,31 +149,108 @@ body {
   background: var(--amber);
 }
 
-/* Typing animation */
+/* Typing animation — JS driven, no CSS width tricks */
 .gw-terminal {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--green);
-  margin-bottom: 28px;
-  min-height: 80px;
-  line-height: 1.9;
+  margin-bottom: 24px;
+  min-height: 88px;
+  line-height: 2;
+  position: relative;
 }
 
-.gw-terminal .line {
+.gw-terminal .t-line {
   display: block;
-  overflow: hidden;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .25s ease, transform .25s ease;
   white-space: nowrap;
-  width: 0;
+  overflow: hidden;
+  color: var(--green);
 }
 
-.gw-terminal .line.typed { width: 100%; }
-.gw-terminal .cursor {
+.gw-terminal .t-line.dim {
+  color: rgba(52,211,153,0.4);
+}
+
+.gw-terminal .t-line.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gw-terminal .t-cursor {
   display: inline-block;
-  width: 8px; height: 13px;
+  width: 7px; height: 13px;
   background: var(--green);
   vertical-align: middle;
-  animation: blink .75s step-end infinite;
-  margin-left: 2px;
+  margin-left: 1px;
+  animation: blink .7s step-end infinite;
+}
+
+/* Step checks — small fading status items below terminal */
+.gw-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+  min-height: 72px;
+}
+
+.gw-step {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+
+.gw-step.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.gw-step.fade {
+  opacity: 0.28;
+}
+
+.gw-step-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--faint);
+  flex-shrink: 0;
+  transition: background .3s ease;
+}
+
+.gw-step.done .gw-step-dot {
+  background: var(--green);
+}
+
+.gw-step-text {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+  letter-spacing: .06em;
+  transition: color .3s ease;
+}
+
+.gw-step.done .gw-step-text {
+  color: rgba(52,211,153,0.5);
+}
+
+.gw-step.active .gw-step-text {
+  color: var(--muted);
+}
+
+.gw-step.active .gw-step-dot {
+  background: var(--amber);
+  animation: pulsedot .8s ease-in-out infinite;
+}
+
+@keyframes pulsedot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .5; transform: scale(1.4); }
 }
 
 @keyframes blink {
@@ -693,10 +770,17 @@ footer {
       <div class="gw-label">Identity verification</div>
 
       <div class="gw-terminal" id="terminal">
-        <span class="line" id="l1"></span>
-        <span class="line" id="l2"></span>
-        <span class="line" id="l3"></span>
-        <span class="cursor" id="cursor"></span>
+        <span class="t-line" id="l1"></span>
+        <span class="t-line dim" id="l2"></span>
+        <span class="t-line dim" id="l3"></span>
+        <span class="t-cursor" id="cursor" style="display:none"></span>
+      </div>
+
+      <div class="gw-steps" id="gw-steps">
+        <div class="gw-step" id="step1"><div class="gw-step-dot"></div><div class="gw-step-text">Checking certificate chain...</div></div>
+        <div class="gw-step" id="step2"><div class="gw-step-dot"></div><div class="gw-step-text">Validating session token...</div></div>
+        <div class="gw-step" id="step3"><div class="gw-step-dot"></div><div class="gw-step-text">Cross-referencing credential registry...</div></div>
+        <div class="gw-step" id="step4"><div class="gw-step-dot"></div><div class="gw-step-text">Decrypting dossier payload...</div></div>
       </div>
 
       <div class="gw-divider"></div>
@@ -752,7 +836,7 @@ footer {
       </div>
     </div>
     <div class="hero-photo-wrap">
-      <img class="hero-photo" src="Φωτογραφία_Υφαντίδης.jpg" alt="Andreas Yfantidis">
+      <img class="hero-photo" src="photo.jpg" alt="Andreas Yfantidis">
       <div class="hero-photo-label">A. Yfantidis</div>
     </div>
   </header>
@@ -982,76 +1066,108 @@ footer {
 </div>
 
 <script>
-// ── TYPING SEQUENCE ──────────────────────────────
-// Three lines must finish within ~1.8s total so VERIFIED lands by 2s
-const lines = [
-  '> Verifying identity token...',
-  '> Signature valid. Access granted.',
-  '> Loading dossier: A.YFANTIDIS...'
-];
+// ── GATEWAY SEQUENCE ─────────────────────────────
+// Timeline (ms from page load):
+//  350  — line 1 starts typing
+//  ~750 — line 1 done, step 1 activates
+//  ~900 — line 2 starts typing, step 2 activates
+// ~1200 — line 2 done, step 3 activates
+// ~1350 — line 3 starts typing, step 4 activates
+// ~1700 — line 3 done, all steps done → VERIFIED
 
-const ids = ['l1','l2','l3'];
+const SPEED = 22; // ms per character
 
-// Budget: 600ms total typing per line at ~28ms/char for short lines
-// lines are ~28, ~33, ~34 chars → ~780ms + 560ms + 952ms = ~2.3s raw
-// Speed up to 22ms/char to land under 2s comfortably
-const CHAR_SPEED = 20;
-const LINE_PAUSE = 180;
-
-function typeLine(idx, text, cb) {
-  const el  = document.getElementById(ids[idx]);
+function typeText(elId, text, onDone) {
+  const el  = document.getElementById(elId);
   const cur = document.getElementById('cursor');
   el.textContent = '';
-  let i = 0;
-  cur.style.display = 'none';
+  el.classList.add('visible');
+  cur.style.display = 'inline-block';
 
+  // Move cursor after this element
+  el.parentNode.insertBefore(cur, el.nextSibling);
+
+  let i = 0;
   const iv = setInterval(() => {
     el.textContent += text[i++];
     if (i >= text.length) {
       clearInterval(iv);
-      cur.style.display = 'inline-block';
-      setTimeout(cb, LINE_PAUSE);
+      cur.style.display = 'none';
+      setTimeout(onDone, 120);
     }
-  }, CHAR_SPEED);
+  }, SPEED);
+}
+
+function stepState(id, state) {
+  const el = document.getElementById(id);
+  el.classList.remove('active', 'done', 'fade');
+  el.classList.add('show');
+  if (state) el.classList.add(state);
+}
+
+function runSequence() {
+  // Line 1
+  typeText('l1', '> Initiating secure handshake...', () => {
+    stepState('step1', 'active');
+
+    setTimeout(() => {
+      stepState('step1', 'done');
+      stepState('step2', 'active');
+
+      // Line 2
+      typeText('l2', '> Verifying identity token...', () => {
+        stepState('step2', 'done');
+        stepState('step3', 'active');
+
+        setTimeout(() => {
+          stepState('step3', 'done');
+          stepState('step4', 'active');
+
+          // Line 3
+          typeText('l3', '> Access granted. Loading dossier...', () => {
+            stepState('step4', 'done');
+            showVerified();
+          });
+        }, 220);
+      });
+    }, 280);
+  });
 }
 
 function showVerified() {
   const banner = document.getElementById('verified-banner');
   const btn    = document.getElementById('access-btn');
-  const cur    = document.getElementById('cursor');
 
-  // Stop blinking cursor
-  cur.style.display = 'none';
+  // Fade steps out
+  document.querySelectorAll('.gw-step').forEach(s => {
+    s.classList.remove('active');
+    s.classList.add('fade');
+  });
 
-  // Flash VERIFIED banner
-  banner.classList.add('show');
-
-  // Fade in button 300ms after banner
   setTimeout(() => {
-    btn.style.opacity = '1';
-    btn.style.pointerEvents = 'auto';
-  }, 300);
+    banner.classList.add('show');
+    setTimeout(() => {
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+    }, 320);
+  }, 200);
 }
 
-function runTyping() {
-  typeLine(0, lines[0], () =>
-    typeLine(1, lines[1], () =>
-      typeLine(2, lines[2], showVerified)
-    )
-  );
-}
-
-// Button hidden until verified
+// Hide button until verified
 const btn = document.getElementById('access-btn');
 btn.style.opacity = '0';
 btn.style.pointerEvents = 'none';
 btn.style.transition = 'opacity .45s ease';
 
-window.addEventListener('load', () => {
-  setTimeout(runTyping, 350);
+// Make lines invisible initially — JS will reveal them
+['l1','l2','l3'].forEach(id => {
+  const el = document.getElementById(id);
+  el.textContent = '';
 });
 
-// ── UNLOCK ──────────────────────────────────────
+window.addEventListener('load', () => setTimeout(runSequence, 400));
+
+// ── UNLOCK ───────────────────────────────────────
 function unlockCV() {
   const gw = document.getElementById('gateway');
   const cv = document.getElementById('cv');
@@ -1064,7 +1180,7 @@ function unlockCV() {
   }, 700);
 }
 
-// ── SCROLL REVEAL ───────────────────────────────
+// ── SCROLL REVEAL ────────────────────────────────
 function initReveal() {
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -1077,7 +1193,6 @@ function initReveal() {
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 }
 
-// Lock scroll while gateway is up
 document.body.style.overflowY = 'hidden';
 </script>
 </body>
