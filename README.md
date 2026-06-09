@@ -4,15 +4,15 @@
 
 ---
 
-I'm a Senior IT Auditor and Cyber Security Specialist based in Greece. This page is my professional front door — a single place where my career history, certifications, domain expertise, and published research are laid out clearly for anyone who wants to understand what I do and how I think.
+I'm a Senior IT Auditor and a Cyber Security Specialist based in Greece. This page is my professional front door, a single place where my career history, certifications, domain expertise, and published research are laid out clearly for anyone who wants to understand what I do and how I think.
 
-The interactive gateway isn't a gimmick. It's a deliberate design choice since I work in security, and the experience of accessing this profile should feel like it.
+The interactive gateway that you may come accross isn't a gimmick. It's a deliberate design choice since I work in security, and the experience of accessing this profile should feel like it.
 
 ---
 
 ## What you'll find inside
 
-**Professional experience** across KPMG (Big Four), Aegean Experts, and independent consulting — covering IT/IS audit, cyber security advisory, Business Continuity (ISO 22301), GITC frameworks, SOC reporting, and fraud analytics in the energy sector.
+**Professional experience** across KPMG (Big Four), Aegean Experts, and independent a broad variety of consulting projects, covering IT/IS audit, cyber security advisory, Business Continuity (ISO 22301), GITC frameworks, SOC reporting, and fraud analytics in the energy sector.
 
 **OT/ICS security** specialisation aligned to ISA/IEC 62443, alongside hands-on Microsoft 365, Entra ID, and Azure audit work in hybrid cloud environments.
 
