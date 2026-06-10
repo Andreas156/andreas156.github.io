@@ -39,7 +39,7 @@ body {
 }
 
 /* ══════════════════════════════════════════
-   GATEWAY OVERLAY
+   GATEWAY
 ══════════════════════════════════════════ */
 #gateway {
   position: fixed;
@@ -58,23 +58,18 @@ body {
   pointer-events: none;
 }
 
-/* Scanline texture */
 #gateway::before {
   content: '';
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.18) 2px,
-    rgba(0,0,0,0.18) 4px
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px
   );
   pointer-events: none;
   z-index: 1;
 }
 
-/* Ambient corner glow */
 #gateway::after {
   content: '';
   position: absolute;
@@ -89,191 +84,102 @@ body {
 .gw-box {
   position: relative;
   z-index: 2;
-  width: min(520px, 92vw);
+  width: min(500px, 92vw);
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: 4px;
-  padding: 48px 44px 40px;
   box-shadow: 0 0 60px rgba(245,158,11,0.06), 0 0 120px rgba(0,0,0,0.6);
+  overflow: hidden;
 }
 
-/* Top bar with "window chrome" */
 .gw-chrome {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 32px;
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
-  border-radius: 4px 4px 0 0;
+  height: 32px;
   display: flex;
   align-items: center;
   padding: 0 14px;
   gap: 7px;
 }
-
-.gw-dot {
-  width: 9px; height: 9px;
-  border-radius: 50%;
-}
+.gw-dot { width: 9px; height: 9px; border-radius: 50%; }
 .gw-dot:nth-child(1) { background: #ef4444; }
 .gw-dot:nth-child(2) { background: #f59e0b; }
 .gw-dot:nth-child(3) { background: #22c55e; }
+.gw-chrome-label { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--faint); letter-spacing: .08em; }
 
-.gw-chrome-label {
-  margin-left: auto;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--faint);
-  letter-spacing: .08em;
-}
+.gw-body { padding: 40px 44px 36px; }
 
-/* Content inside box */
-.gw-content {
-  margin-top: 20px;
-}
-
-.gw-label {
+.gw-eyebrow {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--amber);
   letter-spacing: .14em;
   text-transform: uppercase;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
+.gw-eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--amber); }
 
-.gw-label::before {
-  content: '';
-  width: 20px; height: 1px;
-  background: var(--amber);
+.gw-name {
+  font-family: 'Sora', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -.02em;
+  margin-bottom: 4px;
 }
-
-/* Typing animation — JS driven, no CSS width tricks */
-.gw-terminal {
-  font-family: var(--mono);
-  font-size: 12.5px;
-  color: var(--green);
-  margin-bottom: 24px;
-  min-height: 88px;
-  line-height: 2;
-  position: relative;
-}
-
-.gw-terminal .t-line {
-  display: block;
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity .25s ease, transform .25s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  color: var(--green);
-}
-
-.gw-terminal .t-line.dim {
-  color: rgba(52,211,153,0.4);
-}
-
-.gw-terminal .t-line.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.gw-terminal .t-cursor {
-  display: inline-block;
-  width: 7px; height: 13px;
-  background: var(--green);
-  vertical-align: middle;
-  margin-left: 1px;
-  animation: blink .7s step-end infinite;
-}
-
-/* Step checks — small fading status items below terminal */
-.gw-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 24px;
-  min-height: 72px;
-}
-
-.gw-step {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  opacity: 0;
-  transform: translateX(-6px);
-  transition: opacity .3s ease, transform .3s ease;
-}
-
-.gw-step.show {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.gw-step.fade {
-  opacity: 0.28;
-}
-
-.gw-step-dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--faint);
-  flex-shrink: 0;
-  transition: background .3s ease;
-}
-
-.gw-step.done .gw-step-dot {
-  background: var(--green);
-}
-
-.gw-step-text {
+.gw-subtitle {
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--faint);
-  letter-spacing: .06em;
-  transition: color .3s ease;
-}
-
-.gw-step.done .gw-step-text {
-  color: rgba(52,211,153,0.5);
-}
-
-.gw-step.active .gw-step-text {
   color: var(--muted);
+  letter-spacing: .04em;
+  margin-bottom: 36px;
 }
 
-.gw-step.active .gw-step-dot {
-  background: var(--amber);
-  animation: pulsedot .8s ease-in-out infinite;
-}
-
-@keyframes pulsedot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: .5; transform: scale(1.4); }
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-
-.gw-divider {
-  height: 1px;
+/* Progress bar */
+.gw-track {
+  height: 2px;
   background: var(--border);
-  margin-bottom: 28px;
+  border-radius: 2px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.gw-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--amber);
+  border-radius: 2px;
 }
 
-.gw-meta {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.7;
+.gw-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 32px;
+  min-height: 18px;
+}
+.gw-status-text {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: .06em;
+  transition: opacity .15s;
+}
+.gw-status-text.fade { opacity: 0.3; }
+.gw-pct {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--amber);
+  font-weight: 500;
+  letter-spacing: .06em;
 }
 
-.gw-meta strong { color: var(--text); font-weight: 500; }
+.gw-divider { height: 1px; background: var(--border); margin-bottom: 26px; }
 
+.gw-meta { font-size: 13px; color: var(--muted); line-height: 1.8; margin-bottom: 26px; }
+.gw-meta strong { color: var(--text); font-weight: 500; }
 .gw-meta .clearance {
   display: inline-block;
   margin-top: 12px;
@@ -287,14 +193,47 @@ body {
   letter-spacing: .07em;
 }
 
+.gw-verified {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border: 1px solid rgba(52,211,153,0.3);
+  background: rgba(52,211,153,0.06);
+  border-radius: 3px;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.gw-verified.show { opacity: 1; transform: translateY(0); }
+
+.gw-check {
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  border: 1.5px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.gw-check::after {
+  content: '';
+  display: block;
+  width: 4px; height: 8px;
+  border-right: 1.5px solid var(--green);
+  border-bottom: 1.5px solid var(--green);
+  transform: rotate(45deg) translate(-1px,-1px);
+}
+.gw-verified-text { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--green); letter-spacing: .1em; text-transform: uppercase; }
+.gw-verified-sub  { font-family: var(--mono); font-size: 10px; color: rgba(52,211,153,0.5); letter-spacing: .06em; }
+
 .gw-btn {
   width: 100%;
-  padding: 14px 24px;
+  padding: 13px 20px;
   background: transparent;
   border: 1px solid var(--amber);
   color: var(--amber);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -302,96 +241,24 @@ body {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: color .25s;
+  opacity: 0;
+  transition: opacity .4s ease, color .2s;
 }
-
+.gw-btn.show { opacity: 1; }
 .gw-btn::before {
   content: '';
   position: absolute;
   inset: 0;
   background: var(--amber);
   transform: translateX(-101%);
-  transition: transform .3s cubic-bezier(.4,0,.2,1);
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
   z-index: 0;
 }
-
 .gw-btn:hover::before { transform: translateX(0); }
 .gw-btn:hover { color: #040b14; }
-
 .gw-btn span { position: relative; z-index: 1; }
 
-.gw-footer {
-  margin-top: 20px;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--faint);
-  text-align: center;
-  letter-spacing: .06em;
-}
-
-/* Verified banner */
-.gw-verified {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 11px 18px;
-  border: 1px solid rgba(52,211,153,0.35);
-  background: rgba(52,211,153,0.07);
-  border-radius: 3px;
-  margin-bottom: 22px;
-}
-
-.gw-verified.show {
-  display: flex;
-  animation: verifiedIn .4s cubic-bezier(.2,0,.2,1) both;
-}
-
-.gw-verified-icon {
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  border: 2px solid var(--green);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  animation: checkPop .35s .1s cubic-bezier(.2,0,.2,1) both;
-}
-
-.gw-verified-icon::after {
-  content: '';
-  display: block;
-  width: 5px; height: 9px;
-  border-right: 2px solid var(--green);
-  border-bottom: 2px solid var(--green);
-  transform: rotate(45deg) translate(-1px,-1px);
-}
-
-.gw-verified-text {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--green);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-.gw-verified-sub {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: rgba(52,211,153,0.55);
-  letter-spacing: .06em;
-}
-
-@keyframes verifiedIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes checkPop {
-  0%   { transform: scale(0); opacity: 0; }
-  70%  { transform: scale(1.15); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
+.gw-footer { margin-top: 18px; font-family: var(--mono); font-size: 10px; color: var(--faint); text-align: center; letter-spacing: .06em; }
 
 /* ══════════════════════════════════════════
    MAIN CV
@@ -402,30 +269,15 @@ body {
   transition: opacity .8s ease .1s, transform .8s ease .1s;
   pointer-events: none;
 }
+#cv.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-#cv.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.page {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 0 24px 80px;
-}
+.page { max-width: 1080px; margin: 0 auto; padding: 0 24px 80px; }
 
 @media (min-width: 900px) {
-  .two-col {
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 0 52px;
-    align-items: start;
-  }
+  .two-col { display: grid; grid-template-columns: 260px 1fr; gap: 0 52px; align-items: start; }
   .sidebar { position: sticky; top: 32px; }
 }
 
-/* ── HERO ── */
 .hero {
   padding: 88px 0 72px;
   border-bottom: 1px solid var(--border);
@@ -435,159 +287,72 @@ body {
   gap: 0 44px;
   align-items: center;
 }
-
 .hero-text { min-width: 0; }
-
-.hero-photo-wrap {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-
+.hero-photo-wrap { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .hero-photo {
-  width: 196px;
-  height: 196px;
+  width: 196px; height: 196px;
   border-radius: 4px;
-  object-fit: cover;
-  object-position: center top;
+  object-fit: cover; object-position: center top;
   border: 1px solid var(--border);
   filter: grayscale(12%) contrast(1.05);
   display: block;
   box-shadow: 0 0 0 4px var(--surface), 0 0 0 5px var(--border);
 }
-
-.hero-photo-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--faint);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  text-align: center;
-}
+.hero-photo-label { font-family: var(--mono); font-size: 10px; color: var(--faint); letter-spacing: .1em; text-transform: uppercase; text-align: center; }
 
 .hero-eyebrow {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--amber);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  font-family: var(--mono); font-size: 11px; color: var(--amber);
+  letter-spacing: .12em; text-transform: uppercase;
+  margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
 }
-.hero-eyebrow::before {
-  content: '';
-  width: 28px; height: 1px;
-  background: var(--amber);
-}
+.hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--amber); }
 
 .hero h1 {
   font-family: 'Sora', sans-serif;
-  font-size: clamp(40px, 5.5vw, 64px);
+  font-size: clamp(32px, 4vw, 52px);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.04;
   color: #fff;
   margin-bottom: 10px;
+  white-space: nowrap;
 }
 
-.hero-role {
-  font-family: 'Sora', sans-serif;
-  font-size: clamp(14px, 2vw, 18px);
-  font-weight: 300;
-  color: var(--muted);
-  letter-spacing: .02em;
-  margin-bottom: 32px;
-}
-
-.hero-desc {
-  max-width: 690px;
-  font-size: 15px;
-  color: var(--muted);
-  line-height: 1.85;
-  margin-bottom: 40px;
-}
+.hero-role { font-family: 'Sora', sans-serif; font-size: clamp(14px,2vw,18px); font-weight: 300; color: var(--muted); letter-spacing: .02em; margin-bottom: 32px; }
+.hero-desc { max-width: 690px; font-size: 15px; color: var(--muted); line-height: 1.85; margin-bottom: 40px; }
 .hero-desc strong { color: var(--text); font-weight: 500; }
 
-.contact-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 24px;
-}
-
-.contact-item {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
+.contact-row { display: flex; flex-wrap: wrap; gap: 10px 24px; }
+.contact-item { font-family: var(--mono); font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 7px; }
 .contact-item a { color: var(--blue-hi); text-decoration: none; transition: color .15s; }
 .contact-item a:hover { color: #fff; }
 .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
 
-/* ── SECTION TITLE ── */
 .section-title {
-  font-family: 'Sora', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--amber);
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  margin-bottom: 22px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 600;
+  color: var(--amber); text-transform: uppercase; letter-spacing: .1em;
+  margin-bottom: 22px; display: flex; align-items: center; gap: 10px;
 }
 .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* ── SIDEBAR ── */
 .sidebar-block { margin-bottom: 38px; }
-
 .cred-list { display: flex; flex-direction: column; gap: 7px; }
-
 .cred-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 9px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+  padding: 9px 14px; display: flex; align-items: center; gap: 10px;
   transition: border-color .2s, background .2s;
 }
 .cred-item:hover { border-color: var(--amber); background: var(--surface2); }
-
 .cred-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
 .cred-name { font-size: 12.5px; color: var(--text); font-weight: 500; line-height: 1.3; }
 
 .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag {
-  font-family: var(--mono);
-  font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 3px;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  background: var(--surface);
-  white-space: nowrap;
-  transition: border-color .15s, color .15s;
-}
+.tag { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border-radius: 3px; border: 1px solid var(--border); color: var(--muted); background: var(--surface); white-space: nowrap; transition: border-color .15s, color .15s; }
 .tag:hover { border-color: var(--amber); color: var(--text); }
 .tag.hi { border-color: rgba(125,211,252,0.25); color: var(--blue-hi); background: rgba(125,211,252,0.05); }
 
 .stat-row { display: flex; flex-direction: column; gap: 0; }
-.stat-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--border);
-}
+.stat-item { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px solid var(--border); }
 .stat-item:last-child { border-bottom: none; }
 .stat-label { font-size: 12px; color: var(--muted); }
 .stat-val { font-family: var(--mono); font-size: 11.5px; color: var(--amber); font-weight: 500; }
@@ -597,167 +362,73 @@ body {
 .lang-name { font-size: 13px; color: var(--text); font-weight: 500; }
 .lang-level { font-family: var(--mono); font-size: 11px; color: var(--faint); }
 
-.membership {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 13px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--surface);
-}
-.membership-icon {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--amber);
-  background: var(--amber-dim);
-  padding: 6px 10px;
-  border-radius: 4px;
-  white-space: nowrap;
-  border: 1px solid var(--amber-mid);
-}
+.membership { border: 1px solid var(--border); border-radius: 6px; padding: 13px 16px; display: flex; align-items: center; gap: 12px; background: var(--surface); }
+.membership-icon { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--amber); background: var(--amber-dim); padding: 6px 10px; border-radius: 4px; white-space: nowrap; border: 1px solid var(--amber-mid); }
 .membership-info { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
 .membership-info strong { color: var(--text); font-weight: 500; }
 
-/* ── TIMELINE ── */
 .timeline { display: flex; flex-direction: column; }
-
-.tl-item {
-  display: grid;
-  grid-template-columns: 1px 1fr;
-  gap: 0 24px;
-  padding-bottom: 34px;
-}
+.tl-item { display: grid; grid-template-columns: 1px 1fr; gap: 0 24px; padding-bottom: 34px; }
 .tl-item:last-child { padding-bottom: 0; }
-
 .tl-line { background: var(--border); position: relative; margin-top: 6px; }
 .tl-line::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 50%;
-  transform: translateX(-50%);
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  background: var(--bg);
-  border: 2px solid var(--amber);
-  transition: border-color .2s;
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 9px; height: 9px; border-radius: 50%; background: var(--bg);
+  border: 2px solid var(--amber); transition: border-color .2s;
 }
 .tl-item.past .tl-line::before { border-color: var(--faint); }
 .tl-item:hover .tl-line::before { border-color: #fff; }
 
-.tl-meta {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--faint);
-  margin-bottom: 5px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.badge {
-  font-family: var(--mono);
-  font-size: 9.5px;
-  font-weight: 500;
-  padding: 2px 7px;
-  border-radius: 3px;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-}
+.tl-meta { font-family: var(--mono); font-size: 11px; color: var(--faint); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+.badge { font-family: var(--mono); font-size: 9.5px; font-weight: 500; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: .06em; }
 .badge.active { background: rgba(245,158,11,0.13); color: var(--amber); border: 1px solid rgba(245,158,11,0.28); }
 .badge.past   { background: var(--surface); color: var(--faint); border: 1px solid var(--border); }
 .badge.ind    { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
 
 .tl-role { font-family: 'Sora', sans-serif; font-size: 16.5px; font-weight: 600; color: #fff; margin-bottom: 2px; line-height: 1.2; }
 .tl-org  { font-size: 13px; color: var(--blue-hi); font-weight: 500; margin-bottom: 13px; }
-
 .tl-points { list-style: none; display: flex; flex-direction: column; gap: 7px; }
 .tl-points li { font-size: 13.5px; color: var(--muted); padding-left: 16px; position: relative; line-height: 1.6; }
 .tl-points li::before { content: '›'; position: absolute; left: 0; color: var(--amber); font-weight: 700; }
 
-/* ── EDUCATION ── */
-.edu-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 18px 20px;
-  margin-bottom: 12px;
-  transition: border-color .2s;
-}
+.edu-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; margin-bottom: 12px; transition: border-color .2s; }
 .edu-item:hover { border-color: var(--amber); }
 .edu-item:last-child { margin-bottom: 0; }
 .edu-school { font-family: var(--mono); font-size: 10.5px; color: var(--faint); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
 .edu-degree { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
 .edu-note { font-size: 13px; color: var(--muted); line-height: 1.6; }
-.edu-highlight {
-  display: inline-block;
-  margin-top: 10px;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  color: var(--amber);
-  background: var(--amber-dim);
-  border: 1px solid var(--amber-mid);
-  padding: 3px 10px;
-  border-radius: 3px;
-}
+.edu-highlight { display: inline-block; margin-top: 10px; font-family: var(--mono); font-size: 10.5px; color: var(--amber); background: var(--amber-dim); border: 1px solid var(--amber-mid); padding: 3px 10px; border-radius: 3px; }
 
-/* ── COURSES ── */
 .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
-.course-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 12px 15px;
-  transition: border-color .2s;
-}
+.course-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px 15px; transition: border-color .2s; }
 .course-item:hover { border-color: var(--amber); }
 .course-provider { font-family: var(--mono); font-size: 10px; color: var(--amber); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
 .course-name { font-size: 13px; color: var(--text); font-weight: 500; line-height: 1.4; }
 
-/* ── REVEAL ── */
 .reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
-/* ── FOOTER ── */
-footer {
-  border-top: 1px solid var(--border);
-  margin-top: 80px;
-  padding-top: 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
+footer { border-top: 1px solid var(--border); margin-top: 80px; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .footer-note { font-family: var(--mono); font-size: 11px; color: var(--faint); }
 .footer-note a { color: var(--blue-hi); text-decoration: none; }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 899px) {
-  .hero {
-    padding: 48px 0 44px;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    gap: 36px 0;
-  }
+  .hero { padding: 48px 0 44px; grid-template-columns: 1fr; gap: 36px 0; }
+  .hero h1 { white-space: normal; font-size: clamp(32px, 8vw, 52px); }
   .hero-photo-wrap { flex-direction: row; justify-content: flex-start; gap: 18px; order: -1; }
   .hero-photo { width: 100px; height: 100px; }
   .two-col { display: block; }
   .sidebar { margin-bottom: 40px; }
-  .gw-box { padding: 44px 28px 36px; }
+  .gw-body { padding: 32px 28px 28px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .reveal, #cv { opacity: 1; transform: none; transition: none; }
-  .gw-terminal .line { width: 100% !important; }
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     GATEWAY
-══════════════════════════════════════════ -->
+<!-- GATEWAY -->
 <div id="gateway">
   <div class="gw-box">
     <div class="gw-chrome">
@@ -766,62 +437,50 @@ footer {
       <div class="gw-dot"></div>
       <div class="gw-chrome-label">SECURE_DOSSIER_v2.6 — AES-256</div>
     </div>
+    <div class="gw-body">
+      <div class="gw-eyebrow">Identity verification</div>
+      <div class="gw-name">Andreas Yfantidis</div>
+      <div class="gw-subtitle">Senior IT Auditor &amp; Cyber Security Specialist</div>
 
-    <div class="gw-content">
-      <div class="gw-label">Identity verification</div>
-
-      <div class="gw-terminal" id="terminal">
-        <span class="t-line" id="l1"></span>
-        <span class="t-line dim" id="l2"></span>
-        <span class="t-line dim" id="l3"></span>
-        <span class="t-cursor" id="cursor" style="display:none"></span>
-      </div>
-
-      <div class="gw-steps" id="gw-steps">
-        <div class="gw-step" id="step1"><div class="gw-step-dot"></div><div class="gw-step-text">Checking certificate chain...</div></div>
-        <div class="gw-step" id="step2"><div class="gw-step-dot"></div><div class="gw-step-text">Validating session token...</div></div>
-        <div class="gw-step" id="step3"><div class="gw-step-dot"></div><div class="gw-step-text">Cross-referencing credential registry...</div></div>
-        <div class="gw-step" id="step4"><div class="gw-step-dot"></div><div class="gw-step-text">Decrypting dossier payload...</div></div>
+      <div class="gw-track"><div class="gw-fill" id="gw-fill"></div></div>
+      <div class="gw-status-row">
+        <div class="gw-status-text" id="gw-status">Initialising...</div>
+        <div class="gw-pct" id="gw-pct">0%</div>
       </div>
 
       <div class="gw-divider"></div>
 
       <div class="gw-meta">
-       This dossier contains the professional record of
-        <strong>Andreas Yfantidis</strong> — Senior IT Auditor and Cyber Security Specialist.
-        <br><br>
-        Proceed to review credentials, experience, and security domain expertise.
+        Professional dossier of <strong>Andreas Yfantidis</strong> —
+        Senior IT Auditor and Cyber Security Specialist.<br>
+        Proceed to review credentials, experience, and domain expertise.
         <div class="clearance">CLEARANCE LEVEL: PROFESSIONAL</div>
       </div>
 
-      <div class="gw-verified" id="verified-banner">
-        <div class="gw-verified-icon"></div>
+      <div class="gw-verified" id="gw-verified">
+        <div class="gw-check"></div>
         <div>
-          <div class="gw-verified-text">Identity Verified</div>
+          <div class="gw-verified-text">Identity verified</div>
           <div class="gw-verified-sub">Token valid · Session authenticated</div>
         </div>
       </div>
 
-      <button class="gw-btn" id="access-btn" onclick="unlockCV()">
+      <button class="gw-btn" id="gw-btn" onclick="unlockCV()">
         <span>[ Access Profile ]</span>
       </button>
-
       <div class="gw-footer">Encrypted transmission · TLS 1.3 · Session expires on close</div>
     </div>
   </div>
 </div>
 
-
-<!-- ══════════════════════════════════════════
-     CV
-══════════════════════════════════════════ -->
+<!-- CV -->
 <div id="cv">
 <div class="page">
 
   <header class="hero reveal">
     <div class="hero-text">
       <div class="hero-eyebrow">IT Audit · Cybersecurity · Governance</div>
-      <h1>Andreas<br>Yfantidis</h1>
+      <h1>Andreas Yfantidis</h1>
       <div class="hero-role">Senior IT Auditor &amp; Cyber Security Specialist</div>
       <p class="hero-desc">
         Big Four-trained professional with deep hands-on experience in <strong>IT/IS risk governance</strong>,
@@ -843,8 +502,6 @@ footer {
   </header>
 
   <div class="two-col">
-
-    <!-- SIDEBAR -->
     <aside class="sidebar">
 
       <div class="sidebar-block reveal">
@@ -870,13 +527,13 @@ footer {
       <div class="sidebar-block reveal">
         <div class="section-title">Domain depth</div>
         <div class="stat-row">
-          <div class="stat-item"><span class="stat-label">IT/IS Audit &amp; Governance</span><span class="stat-val">Big Four</span></div>
+          <div class="stat-item"><span class="stat-label">IT/IS Audit &amp; Governance</span><span class="stat-val">Expert</span></div>
           <div class="stat-item"><span class="stat-label">M365 / Entra ID</span><span class="stat-val">Advanced</span></div>
-          <div class="stat-item"><span class="stat-label">OT/ICS — IEC 62443</span><span class="stat-val">Specialist</span></div>
+          <div class="stat-item"><span class="stat-label">OT/ICS — IEC 62443</span><span class="stat-val">Advanced</span></div>
           <div class="stat-item"><span class="stat-label">Fraud Data Analytics</span><span class="stat-val">Advanced</span></div>
-          <div class="stat-item"><span class="stat-label">Business Continuity</span><span class="stat-val">ISO 22301 LA</span></div>
-          <div class="stat-item"><span class="stat-label">Cloud (Azure)</span><span class="stat-val">Practitioner</span></div>
-          <div class="stat-item"><span class="stat-label">GDPR / Law 4624/2019</span><span class="stat-val">Applied</span></div>
+          <div class="stat-item"><span class="stat-label">Business Continuity</span><span class="stat-val">Proficient</span></div>
+          <div class="stat-item"><span class="stat-label">Cloud (Azure)</span><span class="stat-val">Proficient</span></div>
+          <div class="stat-item"><span class="stat-label">GDPR / Law 4624/2019</span><span class="stat-val">Proficient</span></div>
         </div>
       </div>
 
@@ -908,7 +565,6 @@ footer {
 
     </aside>
 
-    <!-- MAIN -->
     <main>
 
       <section style="margin-bottom:50px" class="reveal">
@@ -1067,108 +723,65 @@ footer {
 </div>
 
 <script>
-// ── GATEWAY SEQUENCE ─────────────────────────────
-// Timeline (ms from page load):
-//  350  — line 1 starts typing
-//  ~750 — line 1 done, step 1 activates
-//  ~900 — line 2 starts typing, step 2 activates
-// ~1200 — line 2 done, step 3 activates
-// ~1350 — line 3 starts typing, step 4 activates
-// ~1700 — line 3 done, all steps done → VERIFIED
+/* ── GATEWAY PROGRESS SEQUENCE ── */
+const fill   = document.getElementById('gw-fill');
+const status = document.getElementById('gw-status');
+const pct    = document.getElementById('gw-pct');
+const verified = document.getElementById('gw-verified');
+const btn    = document.getElementById('gw-btn');
 
-const SPEED = 22; // ms per character
+const stages = [
+  { to: 26,  label: 'Checking certificate chain...',    dur: 620 },
+  { to: 54,  label: 'Validating session token...',      dur: 580 },
+  { to: 78,  label: 'Cross-referencing credentials...', dur: 520 },
+  { to: 100, label: 'Decrypting dossier payload...',    dur: 640 },
+];
 
-function typeText(elId, text, onDone) {
-  const el  = document.getElementById(elId);
-  const cur = document.getElementById('cursor');
-  el.textContent = '';
-  el.classList.add('visible');
-  cur.style.display = 'inline-block';
+let progress = 0;
+let stageIdx = 0;
 
-  // Move cursor after this element
-  el.parentNode.insertBefore(cur, el.nextSibling);
-
-  let i = 0;
-  const iv = setInterval(() => {
-    el.textContent += text[i++];
-    if (i >= text.length) {
-      clearInterval(iv);
-      cur.style.display = 'none';
-      setTimeout(onDone, 120);
-    }
-  }, SPEED);
-}
-
-function stepState(id, state) {
-  const el = document.getElementById(id);
-  el.classList.remove('active', 'done', 'fade');
-  el.classList.add('show');
-  if (state) el.classList.add(state);
-}
-
-function runSequence() {
-  // Line 1
-  typeText('l1', '> Initiating secure handshake...', () => {
-    stepState('step1', 'active');
-
-    setTimeout(() => {
-      stepState('step1', 'done');
-      stepState('step2', 'active');
-
-      // Line 2
-      typeText('l2', '> Verifying identity token...', () => {
-        stepState('step2', 'done');
-        stepState('step3', 'active');
-
-        setTimeout(() => {
-          stepState('step3', 'done');
-          stepState('step4', 'active');
-
-          // Line 3
-          typeText('l3', '> Access granted. Loading dossier...', () => {
-            stepState('step4', 'done');
-            showVerified();
-          });
-        }, 220);
-      });
-    }, 280);
-  });
-}
-
-function showVerified() {
-  const banner = document.getElementById('verified-banner');
-  const btn    = document.getElementById('access-btn');
-
-  // Fade steps out
-  document.querySelectorAll('.gw-step').forEach(s => {
-    s.classList.remove('active');
-    s.classList.add('fade');
-  });
-
+function animateTo(target, dur, label, onDone) {
+  status.classList.add('fade');
   setTimeout(() => {
-    banner.classList.add('show');
-    setTimeout(() => {
-      btn.style.opacity = '1';
-      btn.style.pointerEvents = 'auto';
-    }, 320);
-  }, 200);
+    status.textContent = label;
+    status.classList.remove('fade');
+  }, 150);
+
+  const start = progress;
+  const t0 = performance.now();
+
+  function step(now) {
+    const t = Math.min((now - t0) / dur, 1);
+    const e = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+    progress = start + (target - start) * e;
+    fill.style.width = progress + '%';
+    pct.textContent = Math.round(progress) + '%';
+    if (t < 1) { requestAnimationFrame(step); }
+    else { progress = target; onDone(); }
+  }
+  requestAnimationFrame(step);
 }
 
-// Hide button until verified
-const btn = document.getElementById('access-btn');
-btn.style.opacity = '0';
-btn.style.pointerEvents = 'none';
-btn.style.transition = 'opacity .45s ease';
+function runNext() {
+  if (stageIdx >= stages.length) {
+    setTimeout(() => {
+      status.classList.add('fade');
+      setTimeout(() => {
+        status.textContent = 'Access granted.';
+        status.classList.remove('fade');
+        verified.classList.add('show');
+        setTimeout(() => btn.classList.add('show'), 320);
+      }, 150);
+    }, 180);
+    return;
+  }
+  const s = stages[stageIdx++];
+  animateTo(s.to, s.dur, s.label, () => setTimeout(runNext, 200));
+}
 
-// Make lines invisible initially — JS will reveal them
-['l1','l2','l3'].forEach(id => {
-  const el = document.getElementById(id);
-  el.textContent = '';
-});
+window.addEventListener('load', () => setTimeout(runNext, 500));
 
-window.addEventListener('load', () => setTimeout(runSequence, 400));
-
-// ── UNLOCK ───────────────────────────────────────
+/* ── UNLOCK ── */
 function unlockCV() {
   const gw = document.getElementById('gateway');
   const cv = document.getElementById('cv');
@@ -1181,14 +794,11 @@ function unlockCV() {
   }, 700);
 }
 
-// ── SCROLL REVEAL ────────────────────────────────
+/* ── SCROLL REVEAL ── */
 function initReveal() {
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        obs.unobserve(e.target);
-      }
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
     });
   }, { threshold: 0.06 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
