@@ -12,13 +12,13 @@ The interactive gateway that you may come accross isn't a gimmick. It's a delibe
 
 ## What you'll find inside
 
-**Professional experience** across KPMG (Big Four), Aegean Experts, and independent a broad variety of consulting projects, covering IT/IS audit, cyber security advisory, Business Continuity (ISO 22301), GITC frameworks, SOC reporting, and fraud analytics in the energy sector.
+**Professional experience** across KPMG (Big Four), Aegean Experts, and even as an independent academic advisor, I have carried out a broad variety of consulting projects, covering IT/IS audit, cyber security advisory, Business Continuity (ISO 22301), GITC frameworks, SOC reporting, and fraud analytics in the energy sector.
 
 **OT/ICS security** specialisation aligned to ISA/IEC 62443, alongside hands-on Microsoft 365, Entra ID, and Azure audit work in hybrid cloud environments.
 
 **Certifications** including ISO 22301 Lead Auditor, ISC2 CC, IBM Cybersecurity Analyst, Microsoft SC-900/AZ-900, and Fortinet NSE-2. ISACA member #1343130.
 
-**Academic research** — MSc thesis graded 10/10, published work on hybrid warfare, European separatism dynamics, and BRICS geopolitical-economic structures. Co-authored a comparative governance study of ISO/IEC 27001:2022 vs. China's MLPS 2.0.
+**Academic research** — My MSc thesis was graded 10/10 and was written by using LaTex, published work on hybrid warfare, European separatism dynamics, and BRICS geopolitical-economic structures. Co-authored a comparative governance study of ISO/IEC 27001:2022 vs. China's MLPS 2.0.
 
 ---
 
